@@ -7,7 +7,7 @@ document.getElementById('recommendationForm').addEventListener('submit', functio
     fetch('/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ favorite_book: favoriteBook })  // FIXED
+        body: JSON.stringify({ favorite_book: favoriteBook })  
     })
     .then(response => response.json())
     .then(data => {
@@ -24,5 +24,4 @@ document.getElementById('recommendationForm').addEventListener('submit', functio
             data.recommendations.map(book => `<li>${book}</li>`).join('') +
             '</ul>';
     })
-    .catch(err => console.error("Error:", err));
 });

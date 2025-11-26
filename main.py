@@ -1,19 +1,11 @@
 from flask import Flask, jsonify, render_template, request
 import requests
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-
-API_KEY = os.environ.get("BOOKS_API_KEY")
 
 app = Flask(__name__)
-
 
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 @app.route('/recommend', methods=['POST'])
 def recommend_books():
@@ -23,24 +15,19 @@ def recommend_books():
 
     print(f"book name : {book_name}")
 
-    url = "https://api.bigbookapi.com/search-books"
+    url = f"https://api.bigbookapi.com/book/{book_name}/similar"
 
     headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json"
+        "x-api-key": "714dca957ba54eb9b6a4c3a9f71586b4"
     }
 
-    payload = {
-        "book_name": book_name,
+    params = {
         "num_recommendations": 5
     }
 
-    response = requests.post(url, json=payload, headers=headers)
- 
+    response = requests.get(url, headers=headers, params=params)
 
-    return jsonify(response.text)
-
-
+    return jsonify(response.json())
 
 if __name__ == '__main__':
     app.run(debug=True)
