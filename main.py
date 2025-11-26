@@ -3,31 +3,54 @@ import requests
 
 app = Flask(__name__)
 
+API_KEY = "*****************************"
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/recommend', methods=['POST'])
-def recommend_books():
+@app.route('/get_similar', methods=['POST'])
+def get_similar_books():
     data = request.get_json(silent=True)
+    favorite_book = data.get("favorite_book", "").strip()
 
-    book_name = data.get("favorite_book")
+    if not favorite_book:
+        return jsonify({"error": "No book provided"}), 400
 
-    print(f"book name : {book_name}")
+    headers = {"x-api-key": API_KEY}
+    params = {"query": favorite_book, "number": 5}
 
-    url = f"https://api.bigbookapi.com/book/{book_name}/similar"
+    try:
+        response = requests.get("https://api.bigbookapi.com/search-books", headers=headers, params=params)
+        response.raise_for_status()
+    except requests.RequestException as e:
+        return jsonify({"error": f"API request failed: {e}"}), 500
 
-    headers = {
-        "x-api-key": "714dca957ba54eb9b6a4c3a9f71586b4"
-    }
+    api_data = response.json()
+    print("API Response:", api_data) 
 
-    params = {
-        "num_recommendations": 5
-    }
+    books_nested = api_data.get("books", [])
 
-    response = requests.get(url, headers=headers, params=params)
+    similar_books = []
+    for book_list in books_nested:
+        if isinstance(book_list, list) and len(book_list) > 0:
+            book = book_list[0] 
+            title = book.get("title", "No Title")
 
-    return jsonify(response.json())
+            
+            authors = book.get("authors", [])
+            author_name = authors[0]["name"] if authors else "Unknown"
+
+          
+
+            similar_books.append({
+                "title": title,
+                "author": author_name
+            })
+
+    return jsonify({"similar_books": similar_books})
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

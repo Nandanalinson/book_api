@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Similar Books Finder</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <title>Book Recommendations</title>
+    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
 </head>
 <body>
-    <h1>Book Recommendations</h1>
-    <div>
-    <form id="recommendationForm">
-        <label for="preferences">Enter your reading preferences:</label><br>
-        <input type="text" id="preferences" name="preferences" required><br><br>
-    <button type="submit">Get Recommendations</button>
+    <div class="container">
+        <h1>Find Similar Books</h1>
+
+    
+        <form id="bookForm">
+            <input type="text" id="favoriteBook" name="favoriteBook" placeholder="Enter book name" required>
+            <button type="submit">Search</button>
+        </form>
+
+    
+        <div id="results"></div>
     </div>
-    </form>
-    <div id="results"></div>
-       	<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
