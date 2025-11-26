@@ -40,7 +40,6 @@ def get_similar_books():
                 "author": author_name
             })
 
-    # select first author or fallback
     author_name = similar_books[0]["author"] if similar_books else "Unknown"
 
     connect = psycopg2.connect(database="haiku", 
@@ -49,17 +48,19 @@ def get_similar_books():
                         host="localhost", port="5433")
     cur = connect.cursor()
 
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS books (
-            id SERIAL PRIMARY KEY,
-            book_name TEXT,
-            author TEXT
-        )
-    """)
+    cur.execute("CREATE TABLE IF NOT EXISTS books (id SERIAL PRIMARY KEY,book_name TEXT,author TEXT)")
 
     add_book = "INSERT INTO books (book_name, author) VALUES (%s, %s)"
     cur.execute(add_book, (favorite_book, author_name))
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS similar_books (
+    id SERIAL PRIMARY KEY,
+    book_name TEXT,
+    similar_title TEXT,
+    similar_author TEXT)""")
 
+    for item in similar_books:
+        cur.execute("INSERT INTO similar_books (book_name, similar_title, similar_author) VALUES (%s, %s, %s)",(favorite_book, item["title"], item["author"]))
     connect.commit()
     connect.close()
 
