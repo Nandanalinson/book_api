@@ -17,7 +17,7 @@ def get_similar_books():
 
     data = request.get_json(silent=True)
     favorite_book = data.get("favorite_book", "").strip()
-    print("favourite_book :")
+
 
     headers = {"x-api-key": API_KEY}
     params = {"query": favorite_book, "number": 5}
