@@ -27,7 +27,7 @@ def get_similar_books():
 
     api_data = response.json()
     books_nested = api_data.get("books", [])
-
+    print("favoritebook")
     similar_books = []
     for book_list in books_nested:
         if isinstance(book_list, list) and len(book_list) > 0:
